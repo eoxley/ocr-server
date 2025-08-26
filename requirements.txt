@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pytesseract
+pdf2image
+google-cloud-vision
+Pillow
+python-multipart
