@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides"
+           xsi:type="MailApp">
+
+  <Id>c518d2f2-3bc7-4db4-a863-7cc313c921f5</Id>
+  <Version>1.0.0.9</Version>
+  <ProviderName>BlocIQ</ProviderName>
+  <DefaultLocale>en-GB</DefaultLocale>
+  <DisplayName DefaultValue="BlocIQ Assistant"/>
+  <Description DefaultValue="AI-powered assistant for Outlook"/>
+  <IconUrl DefaultValue="https://www.blociq.co.uk/addin/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://www.blociq.co.uk/addin/icon-80.png"/>
+  <SupportUrl DefaultValue="https://www.blociq.co.uk/support"/>
+
+  <AppDomains>
+    <AppDomain>blociq.co.uk</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.3"/>
+    </Sets>
+  </Requirements>
+
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://www.blociq.co.uk/addin/taskpane.html"/>
+        <RequestedHeight>350</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+
+  <Permissions>ReadWriteItem</Permissions>
+
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Edit"/>
+  </Rule>
+
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+
+  <!-- ✅ NOW USING V1_1 -->
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides"
+                    xsi:type="VersionOverridesV1_1">
+
+    <Hosts>
+      <Host xsi:type="MailHost">
+        <DesktopFormFactor>
+          <!-- ✅ FunctionFile now in correct location -->
+          <FunctionFile resid="functionFileUrl"/>
+
+          <!-- Read Surface -->
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="msgReadGroup">
+                <Label resid="groupLabel"/>
+                <Control xsi:type="Button" id="msgReadButton">
+                  <Label resid="paneButtonLabel"/>
+                  <Supertip>
+                    <Title resid="paneSuperTipTitle"/>
+                    <Description resid="paneSuperTipDescription"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="taskpaneUrl"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+
+          <!-- Compose Surface -->
+          <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="msgComposeGroup">
+                <Label resid="groupLabel"/>
+
+                <Control xsi:type="Button" id="msgComposeButton">
+                  <Label resid="paneButtonLabel"/>
+                  <Supertip>
+                    <Title resid="paneSuperTipTitle"/>
+                    <Description resid="paneSuperTipDescription"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="taskpaneUrl"/>
+                  </Action>
+                </Control>
+
+                <!-- AI Reply -->
+                <Control xsi:type="Button" id="aiReplyButton">
+                  <Label resid="aiReplyButtonLabel"/>
+                  <Supertip>
+                    <Title resid="aiReplySuperTipTitle"/>
+                    <Description resid="aiReplySuperTipDescription"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>showAIReplyModal</FunctionName>
+                  </Action>
+                </Control>
+
+                <!-- Inbox Triage -->
+                <Control xsi:type="Button" id="inboxTriageButton">
+                  <Label resid="inboxTriageButtonLabel"/>
+                  <Supertip>
+                    <Title resid="inboxTriageSuperTipTitle"/>
+                    <Description resid="inboxTriageSuperTipDescription"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>showInboxTriage</FunctionName>
+                  </Action>
+                </Control>
+
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="icon16" DefaultValue="https://www.blociq.co.uk/addin/icon-16.png"/>
+        <bt:Image id="icon32" DefaultValue="https://www.blociq.co.uk/addin/icon-32.png"/>
+        <bt:Image id="icon80" DefaultValue="https://www.blociq.co.uk/addin/icon-80.png"/>
+      </bt:Images>
+
+      <bt:Urls>
+        <bt:Url id="taskpaneUrl" DefaultValue="https://www.blociq.co.uk/addin/taskpane.html"/>
+        <bt:Url id="functionFileUrl" DefaultValue="https://www.blociq.co.uk/addin/functions.html"/>
+      </bt:Urls>
+
+      <bt:ShortStrings>
+        <bt:String id="groupLabel" DefaultValue="BlocIQ Assistant"/>
+        <bt:String id="paneButtonLabel" DefaultValue="Open Assistant"/>
+        <bt:String id="paneSuperTipTitle" DefaultValue="BlocIQ Assistant"/>
+        <bt:String id="aiReplyButtonLabel" DefaultValue="AI Reply"/>
+        <bt:String id="aiReplySuperTipTitle" DefaultValue="Generate AI Reply"/>
+        <bt:String id="inboxTriageButtonLabel" DefaultValue="Inbox Triage"/>
+        <bt:String id="inboxTriageSuperTipTitle" DefaultValue="AI Inbox Triage"/>
+      </bt:ShortStrings>
+
+      <bt:LongStrings>
+        <bt:String id="paneSuperTipDescription" DefaultValue="Open BlocIQ Assistant to work with this email."/>
+        <bt:String id="aiReplySuperTipDescription" DefaultValue="Generate an AI-powered reply to this email."/>
+        <bt:String id="inboxTriageSuperTipDescription" DefaultValue="Use AI to triage and respond to multiple emails."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>
