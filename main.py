@@ -24,13 +24,27 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Add CORS middleware
+# Get allowed origins from environment variable or use defaults
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else [
+    "https://www.blociq.co.uk",
+    "https://blociq-h3xv-bf7j9j1tw-eleanoroxley-9774s-projects.vercel.app",
+    "https://*.vercel.app",
+    "http://localhost:3000"
+]
+
+# Clean up any empty strings from the list
+allowed_origins = [origin.strip() for origin in allowed_origins if origin.strip()]
+
+print(f"CORS configured for origins: {allowed_origins}")
+
+# Add CORS middleware with explicit configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this for production
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 # Initialize Google Vision client if credentials are available
@@ -46,6 +60,7 @@ if GOOGLE_VISION_AVAILABLE:
                 json.dump(credentials_dict, f)
                 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
             vision_client = vision.ImageAnnotatorClient()
+            print("Google Vision client initialized successfully")
         except Exception as e:
             print(f"Failed to initialize Google Vision: {e}")
 
@@ -121,7 +136,8 @@ async def root():
     return {
         "message": "BlocIQ OCR Service is running",
         "tesseract_available": True,
-        "google_vision_available": vision_client is not None
+        "google_vision_available": vision_client is not None,
+        "allowed_origins": allowed_origins
     }
 
 @app.post("/upload")
@@ -135,6 +151,8 @@ async def upload_file(
     - **file**: PDF or image file to process
     - **use_google_vision**: Use Google Vision API instead of Tesseract (requires credentials)
     """
+    
+    print(f"Processing file: {file.filename}, content_type: {file.content_type}")
     
     # Validate file type
     allowed_types = {
@@ -176,6 +194,8 @@ async def upload_file(
             else:
                 extracted_text = extract_text_with_tesseract(temp_file_path)
                 source = "tesseract"
+        
+        print(f"OCR completed: {len(extracted_text)} characters extracted using {source}")
         
         return {
             "text": extracted_text,
